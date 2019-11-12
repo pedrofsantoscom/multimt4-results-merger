@@ -235,9 +235,9 @@ class Merger
                 //$value = str_replace(".", ",", $value);
                 $lineData = explode(";", $value);
 
-                if (strpos($lineData[7], "999") !== false 
-                || strpos($lineData[7], "100") !== false
-                || strpos($lineData[7], "0.000") !== false)
+                if (strpos($lineData[7], "100") !== false
+                //|| strpos($lineData[7], "999") !== false 
+                || strpos($lineData[7], ";0.000") !== false)
                 {
                     continue;
                 }
@@ -478,7 +478,7 @@ class Merger
 
         if (!file_exists(self::$resultsFolder))
             mkdir(self::$resultsFolder);
-        $savedFilename = "merged_[".$splitIndiname[0]."]_".count($pairsAdded)."pairs_".$splitIndiname[1]."_".$splitIndiname[2].".xlsx";
+        $savedFilename = "merged_[".$splitIndiname[0]."]_".$splitIndiname[1]."_".$splitIndiname[2]."_".count($pairsAdded)."pairs.xlsx";
         $saved = $writer->save(self::$resultsFolder.$savedFilename);
 
         $spreadsheet->disconnectWorksheets();
@@ -532,11 +532,18 @@ class Merger
             {
                 $splitIndiname = explode("|", $key);
 
-                $savedFilename = "merged_[".$splitIndiname[0]."]_".count($value)."pairs_".$splitIndiname[1]."_".$splitIndiname[2].".xlsx";
+                $savedFilename = "merged_[".$splitIndiname[0]."]_".$splitIndiname[1]."_".$splitIndiname[2]."_*";//.count($value)."pairs.xlsx";
+                $files = glob(self::$resultsFolder . $savedFilename);
+                if(count($files) > 0)
+                    unset($grouped[$key]);
+
+                /*
+                $savedFilename = "merged_[".$splitIndiname[0]."]_".$splitIndiname[1]."_".$splitIndiname[2]."_".count($value)."pairs.xlsx";
                 if (file_exists(self::$resultsFolder . $savedFilename))
                 {
                     unset($grouped[$key]);
                 }
+                */
             }
         }
 
